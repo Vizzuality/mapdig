@@ -1,4 +1,4 @@
-MapDig generic map explorer for CartoDB
+MapDig - generic map explorer for CartoDB
 ========================================
 Create your own simple map explorer for CartoDB.
 
