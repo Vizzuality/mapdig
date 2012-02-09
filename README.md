@@ -1,6 +1,6 @@
 MapDig - generic map explorer for CartoDB
 ========================================
-Create your own simple map explorer for CartoDB.
+Generate a simple map explorer for CartoDB public tables.
 
 * [Explore your public tables](http://vizzuality.github.com/mapdig/index.html)
 * [Explore the 2010 World Database of Protected Areas](http://vizzuality.github.com/mapdig/wdpa.html)
