@@ -3,6 +3,7 @@ MapDig - generic map explorer for CartoDB
 Generate a simple map explorer for CartoDB public tables.
 
 * [Explore your public tables](http://vizzuality.github.com/mapdig/index.html)
+* [Explore OpenStreetMap London Points of Interest](http://vizzuality.github.com/mapdig/osm.html)
 * [Explore the 2010 World Database of Protected Areas](http://vizzuality.github.com/mapdig/wdpa.html)
 
 <img src="http://dl.dropbox.com/u/193220/CartoDB/mapdig.png" width="900px"/>

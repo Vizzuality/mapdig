@@ -49,47 +49,60 @@ MAPDIG.create = function(carto_user, table_name, ignore, default_width) {
         c = that.gui.add(that, 'generated_sql').name('Map SQL');
         c.onFinishChange(function(value) { that.executeSQL(value); });
 
-        // Attempt to reflect table structure and attach controls and events for any columns found
+        // Attempt to reflect table structure and attach controls and events for all columns found
+        // Currently does this long hand as cannot access schema. dumb, but works
         $.getJSON('http://'+that.carto_user+'.cartodb.com/api/v2/sql/?q=select%20*%20from%20' + that.table +'%20limit%201', function(data){
-            n1 = that.gui.addFolder('Numeric filter');
-            s1 = that.gui.addFolder('Text filter');
-            _.each(data.rows[0], function(val,key){
-                if(_.isNumber(val) && !_.include(that.ignore, key)){
-                    $.getJSON('http://'+that.carto_user+'.cartodb.com/api/v2/sql/?q=select min('+key+'), max('+key+') from ' + that.table, function(data){
-                        if (data.rows[0].max > data.rows[0].min){
-                           //f1 = n1.addFolder(key);
 
-                            that.numbers[key+' min'] = data.rows[0].min;
-                            that.numbers[key+' max'] = data.rows[0].max;
-                            that.origin_numbers[key+' min'] = data.rows[0].min;
-                            that.origin_numbers[key+' max'] = data.rows[0].max;
-
-                            c = n1.add(that.numbers, key+' min', data.rows[0].min, data.rows[0].max);
-                            c.onFinishChange(function(value) { that.renderSQL(); });
-                            c = n1.add(that.numbers, key+' max', data.rows[0].min, data.rows[0].max);
-                            c.onFinishChange(function(value) { that.renderSQL(); });
-                        }
-                    });
+            // grab the top value in each col, strip ignores
+            var cols = [];
+            _.each(data.rows[0],function(val,key){
+                if (!_.include(that.ignore, key)){
+                    cols.push('max("'+key+'") as ' + key);
                 }
+            });
 
-                // test if it's massive - if so, text box, else dropdown.
-                if(_.isString(val) && !_.include(that.ignore,key)){
-                    $.getJSON('http://'+that.carto_user+'.cartodb.com/api/v2/sql/?q=select count(distinct('+key+')) from ' + that.table, function(data){
-                        if (data.rows[0].count <= 1000 && data.rows[0].count > 0){
-                            $.getJSON('http://'+that.carto_user+'.cartodb.com/api/v2/sql/?q=select distinct('+key+') as ele from ' + that.table + ' ORDER BY ELE ASC', function(data){
-                                tmp_dat = _.map(data.rows, function(r){ return r.ele; });
-                                tmp_dat.unshift('*');
-                                that.strings[key] = '*';
-                                c = s1.add(that.strings, key, tmp_dat );
+            // sample a value from each column to determine GUI element type
+            $.getJSON('http://'+that.carto_user+'.cartodb.com/api/v2/sql/?q=select%20'+cols.join(',') +'%20from%20' + that.table +'%20limit%201', function(data){
+                n1 = that.gui.addFolder('Numeric filter');
+                s1 = that.gui.addFolder('Text filter');
+                _.each(data.rows[0], function(val,key){
+                    if(_.isNumber(val)){
+                        $.getJSON('http://'+that.carto_user+'.cartodb.com/api/v2/sql/?q=select min("'+key+'"), max("'+key+'") from ' + that.table, function(data){
+                            if (data.rows[0].max > data.rows[0].min){
+                                //f1 = n1.addFolder(key);
+
+                                that.numbers[key+' min'] = data.rows[0].min;
+                                that.numbers[key+' max'] = data.rows[0].max;
+                                that.origin_numbers[key+' min'] = data.rows[0].min;
+                                that.origin_numbers[key+' max'] = data.rows[0].max;
+
+                                c = n1.add(that.numbers, key+' min', data.rows[0].min, data.rows[0].max);
                                 c.onFinishChange(function(value) { that.renderSQL(); });
-                            });
-                        } else {
-                            that.strings[key] = '*';
-                            c = s1.add(that.strings,key);
-                            c.onFinishChange(function(value) { that.renderSQL(); });
-                        }
-                    });
-                }
+                                c = n1.add(that.numbers, key+' max', data.rows[0].min, data.rows[0].max);
+                                c.onFinishChange(function(value) { that.renderSQL(); });
+                            }
+                        });
+                    }
+
+                    // test if it's massive - if so, text box, else dropdown.
+                    if(_.isString(val)){
+                        $.getJSON('http://'+that.carto_user+'.cartodb.com/api/v2/sql/?q=select count(distinct("'+key+'")) from ' + that.table, function(data){
+                            if (data.rows[0].count <= 1000 && data.rows[0].count > 0){
+                                $.getJSON('http://'+that.carto_user+'.cartodb.com/api/v2/sql/?q=select distinct("'+key+'") as ele from ' + that.table + ' ORDER BY ELE ASC', function(data){
+                                    tmp_dat = _.map(data.rows, function(r){ return r.ele; });
+                                    tmp_dat.unshift('*');
+                                    that.strings[key] = '*';
+                                    c = s1.add(that.strings, key, tmp_dat );
+                                    c.onFinishChange(function(value) { that.renderSQL(); });
+                                });
+                            } else {
+                                that.strings[key] = '*';
+                                c = s1.add(that.strings,key);
+                                c.onFinishChange(function(value) { that.renderSQL(); });
+                            }
+                        });
+                    }
+                });
             });
         });
 
