@@ -1,55 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-  <title>MapDig - generic map data viewer</title>
-  <link rel="shortcut icon" href="http://cartodb.com/favicon/favicon_32x32.ico" />
-  <link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="lib/cartodb.css">
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-  <script type="text/javascript" src="lib/wax.g.js"></script>
-  <script type="text/javascript" src="lib/cartodb-gmapsv3.js"></script>
-  <script type="text/javascript" src="lib/dat.gui.min.js"></script>
-  <script type="text/javascript" src="lib/underscore-min.js"></script>
-  <script type="text/javascript" src="src/mapdig.js"></script>
-  <script type="text/javascript">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>MapDig - generic map data viewer</title>
+    <link rel="shortcut icon" href="http://cartodb.com/favicon/favicon_32x32.ico" />
+    <link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="lib/cartodb.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript" src="../lib/wax.g.js"></script>
+    <script type="text/javascript" src="../lib/cartodb-gmapsv3.js"></script>
+    <script type="text/javascript" src="../lib/dat.gui.min.js"></script>
+    <script type="text/javascript" src="../lib/underscore-min.js"></script>
+    <script type="text/javascript" src="../src/mapdig.js"></script>
+    <script type="text/javascript">
 
-  function initialize() {
-    var carto_user = prompt("Please enter your CartoDB username (try: examples)");
-    var table      = prompt("Please enter the table to visualise (try: nyc_wifi)");
-    var ignore     = [];          // columns you don't want to include in your GUI
-    var width      = 300;         // width of your GUI in pixels
-    var mapdig     = new MAPDIG.create(carto_user, table, ignore, width);
+        function initialize() {
+            var carto_user = prompt("Please enter your CartoDB username (try: examples)");
+            var table      = prompt("Please enter the table to visualise (try: nyc_wifi)");
+            var ignore     = [];          // columns you don't want to include in your GUI
+            var width      = 300;         // width of your GUI in pixels
+            var mapdig     = new MAPDIG.create(carto_user, table, ignore, width);
 
-    // initialise the google map
-    var map = new google.maps.Map(document.getElementById('map_canvas'), {
-      center: new google.maps.LatLng(20,0),
-      zoom: 3,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      mapTypeControl: false
-    });
+            // initialise the google map
+            var map = new google.maps.Map(document.getElementById('map_canvas'), {
+                center: new google.maps.LatLng(20,0),
+                zoom: 3,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                mapTypeControl: false
+            });
 
-    // initialize the CartoDB layer
-    var cartodb1_gmapsv3 = new google.maps.CartoDBLayer({
-      map_canvas: 'map_canvas',
-      map: map,
-      user_name: mapdig.carto_user,
-      table_name: mapdig.table,
-      query: mapdig.SQL,
-      auto_bound:true,
-      map_style: true
-    });
+            // initialize the CartoDB layer
+            var cartodb1_gmapsv3 = new google.maps.CartoDBLayer({
+                map_canvas: 'map_canvas',
+                map: map,
+                user_name: mapdig.carto_user,
+                table_name: mapdig.table,
+                query: mapdig.SQL,
+                auto_bound:true,
+                map_style: true
+            });
 
-    // initialize the generic GUI
-    mapdig.init(cartodb1_gmapsv3);
-  }
+            // initialize the generic GUI
+            mapdig.init(cartodb1_gmapsv3);
+        }
 
-  </script>
+    </script>
 </head>
 <body onload="initialize()">
-  <div id="map_canvas"></div>
-  <a class="cartodb_logo" href="http://www.cartodb.com" target="_blank">CartoDB</a>
+<div id="map_canvas"></div>
+<a class="cartodb_logo" href="http://www.cartodb.com" target="_blank">CartoDB</a>
 </body>
 </html>
