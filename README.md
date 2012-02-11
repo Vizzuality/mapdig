@@ -1,6 +1,6 @@
 MapDig - generic map explorer for CartoDB
 ========================================
-Generate a simple map explorer for CartoDB public tables.
+Generate a simple map explorer for CartoDB public tables using the awesome [dat.gui.js](http://workshop.chromeexperiments.com/examples/gui/) by Google.
 
 * [Explore your public tables](http://vizzuality.github.com/mapdig/examples/index.html)
 * [Explore OpenStreetMap London Points of Interest](http://vizzuality.github.com/mapdig/examples/osm_point.html)
@@ -49,3 +49,6 @@ var cartodb1_gmapsv3 = new google.maps.CartoDBLayer({
 mapdig.init(cartodb1_gmapsv3);
 ```
 
+Credits
+--------
+* [dat.gui.js](http://code.google.com/p/dat-gui/)
